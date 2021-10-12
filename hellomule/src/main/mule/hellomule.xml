@@ -1,14 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+<mule
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6fccac0f-5704-4cff-83b2-076a85c0c7f3" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<http:listener-config name="HTTP_Listener_config"
+		doc:name="HTTP Listener config"
+		doc:id="6fccac0f-5704-4cff-83b2-076a85c0c7f3">
+		<http:listener-connection host="0.0.0.0"
+			port="8082" protocol="HTTPS">
+			<tls:context>
+				<tls:key-store path="keystore-hello.jks"
+					keyPassword="${secure::keyPass}" password="${secure::keyPass}" />
+			</tls:context>
+		</http:listener-connection>
 	</http:listener-config>
-	<flow name="hellomuleFlow" doc:id="d212b4fb-273b-4e61-baaa-3c02fd98fe41" >
-		<http:listener doc:name="Listener" doc:id="6a2ee4bc-c1a6-4946-8c90-4aad0bd15eb6" config-ref="HTTP_Listener_config" path="/hellomule"/>
-		<set-payload value="Hello Mule" doc:name="Set Payload" doc:id="594b493a-7b1c-481a-ab3e-93e97975ff4e" />
+	<secure-properties:config
+		name="Secure_Properties_Config" doc:name="Secure Properties Config"
+		doc:id="6fb4bcc9-828d-4e22-b91e-a0ad8f6081c6" file="local.properties"
+		key="${secure.key}">
+		<secure-properties:encrypt
+			algorithm="Blowfish" />
+	</secure-properties:config>
+	<salesforce:sfdc-config name="Salesforce_Config"
+		doc:name="Salesforce Config"
+		doc:id="0161f451-4acb-42ad-86c8-cd1c8e78ea58">
+		<salesforce:basic-connection
+			username="${secure::salesforceUsername}"
+			password="${secure::salesforcePassword}"
+			securityToken="${secure::salesforceToken}" />
+	</salesforce:sfdc-config>
+	<flow name="hellomuleFlow"
+		doc:id="d212b4fb-273b-4e61-baaa-3c02fd98fe41">
+		<http:listener doc:name="Listener"
+			doc:id="6a2ee4bc-c1a6-4946-8c90-4aad0bd15eb6"
+			config-ref="HTTP_Listener_config" path="/hellomule" />
+		<set-payload value="Hello Mule" doc:name="Set Payload"
+			doc:id="594b493a-7b1c-481a-ab3e-93e97975ff4e" />
+	</flow>
+	<flow name="securedFlow"
+		doc:id="3a59bfe2-6057-4fbf-a73a-439d72a0d364">
+		<http:listener doc:name="Listener"
+			doc:id="850f309f-1b16-4890-acbc-39fd4f1b6fa4"
+			config-ref="HTTP_Listener_config" path="/salesforce" />
+		<salesforce:create doc:name="Create"
+			doc:id="771243b8-d96d-473b-875c-da8ae9890dd7"
+			config-ref="Salesforce_Config" type="Lead">
+			<salesforce:records><![CDATA[#[%dw 2.0
+output application/json
+---
+[{
+	FirstName: "Max",
+	LastName: "Mule",
+	Email: "maxthemule@mulesoft.com",
+	Company: "MuleSoft"
+}]]]]></salesforce:records>
+		</salesforce:create>
 	</flow>
 </mule>

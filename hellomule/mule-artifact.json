@@ -1,3 +1,9 @@
 {
-  "minMuleVersion": "4.4.0"
+	"minMuleVersion": "4.4.0",
+	"secureProperties": [
+		"secure.key",
+		"secure::keyPass",
+		"secure::salesforcePassword",
+		"secure::salesforceToken"
+	]
 }
