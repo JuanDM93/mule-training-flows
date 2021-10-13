@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
 	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
 	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
@@ -12,7 +13,8 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	<http:listener-config name="HTTP_Listener_config"
 		doc:name="HTTP Listener config"
 		doc:id="6fccac0f-5704-4cff-83b2-076a85c0c7f3">
@@ -39,6 +41,10 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 			password="${secure::salesforcePassword}"
 			securityToken="${secure::salesforceToken}" />
 	</salesforce:sfdc-config>
+	<api-gateway:autodiscovery
+		apiId="${secure::apiId}" ignoreBasePath="true"
+		doc:name="API Autodiscovery"
+		doc:id="858a8c2f-a7ef-4666-a0f4-af99ff90a349" flowRef="hellomuleFlow" />
 	<flow name="hellomuleFlow"
 		doc:id="d212b4fb-273b-4e61-baaa-3c02fd98fe41">
 		<http:listener doc:name="Listener"
