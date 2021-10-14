@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d553ea77-640b-413b-959f-21754815ab20" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="attribretrieverFlow" doc:id="f7588354-3792-4872-bd4d-0eb3356c0ae1" >
+		<http:listener doc:name="Listener" doc:id="3fc6ab45-4ab8-4491-81df-8c9d899a88f0" config-ref="HTTP_Listener_config" path="/retrieve/{uuid}"/>
+		<ee:transform doc:name="Transform Message" doc:id="ad921083-bfa9-456a-8337-a0b52bcce557" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "client_id": attributes.headers.client_id,
+  "client_secret": attributes.headers.client_secret,
+  "name": attributes.queryParams.name,
+  "productID": attributes.queryParams.productID,
+  "uuid": attributes.uriParams.'uuid'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
