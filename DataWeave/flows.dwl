@@ -1,13 +1,9 @@
 %dw 2.0
 // if
-var data1 = {
-        "price": 150.00
-    }
-var action = if (data1.price < 100) "buy" else if (data1.price > 140) "sell" else "hold"
-
+output json
 // case
 var data2 = {
-        "id": 290505,     
+        "id": 290505,           
         "status": 0,
         "name": "Cabin outdoor light"
     }
@@ -20,7 +16,12 @@ var status = data2.status  match {
 var result = {
         "status": "ok"
     }
-output json
+
+// if
+var data1 = {
+        "price": 150.00
+    }
+var actions = if (data1.price < 100) "buy" else if (data1.price > 140) "sell" else "hold"
 ---
 /*
 // if
