@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:dbserver="http://www.mulesoft.org/schema/mule/dbserver"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/dbserver http://www.mulesoft.org/schema/mule/dbserver/current/mule-dbserver.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<munit:config name="munittest-test-suite.xml" />
+	<dbserver:config name="MUnit_DB_Server_Config"
+		doc:name="MUnit DB Server Config"
+		doc:id="9bea27e3-91fe-4dcb-95d2-b9f1d207e4d8">
+		<dbserver:connection csv="contacts.csv"
+			database="TestDB" />
+	</dbserver:config>
+	<db:config name="Test_Database" doc:name="Database Config" doc:id="4ed1d59a-8a35-4517-8b1d-5e57605b4c4e" >
+		<db:generic-connection url="jdbc:h2:tcp://localhost/mem:TestDB" driverClassName="org.h2.Driver" />
+	</db:config>
+	<munit:test name="munittest-test-suite-munittestFlowTest" doc:id="c3dbea8e-ed6f-41be-aa6f-23c9f89a1821" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to munittestFlow" doc:id="f3c717aa-33e4-4a8a-944b-444e44da5ad2" name="munittestFlow"/>
+		</munit:execution>
+	</munit:test>
+
+</mule>
