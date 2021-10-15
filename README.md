@@ -17,6 +17,8 @@ List of projects to work with
 /hellomule
 /SendSMSAPI
 /ContactAPI
+/AttribRetriever
+/MUnitTest
 ```
 
 ### DataWeave files
